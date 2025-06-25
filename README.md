@@ -1,112 +1,123 @@
-# A Simple MoonBoard BLE LED System for ESP32
+# Un Sistema Sencillo de LEDs BLE para MoonBoard en ESP32
 
-This project started as a fork of the very good [Moonboard LED on Arduino 33 BLE](https://github.com/FabianRig/ArduinoMoonBoardLED) project in order to add ESP32 chip support. But since then, the project has been almost completely rewritten for the BLE and problem processing parts. On top of that the BLE libraries are incompatible between Nano 33 BLE and ESP32 chips. So another project was born!
+Este proyecto comenzó como un *fork* del excelente proyecto [Moonboard LED en Arduino 33 BLE](https://github.com/FabianRig/ArduinoMoonBoardLED) con el fin de añadir soporte para el chip ESP32. Pero desde entonces, el proyecto ha sido casi completamente reescrito en lo que respecta a las partes de procesamiento de BLE y problemas. Además, las bibliotecas BLE son incompatibles entre los chips Nano 33 BLE y ESP32. ¡Así nació otro proyecto!
 
-This project aims at providing an easy to use solution for building your own MoonBoard LED system. It is both compatible with a normal MoonBoard as well as with the MoonBoard Mini.
+Este proyecto tiene como objetivo proporcionar una solución fácil de usar para construir su propio sistema de LEDs MoonBoard. Es compatible tanto con un MoonBoard normal como con el MoonBoard Mini.
 
-If you want a product that just works, please buy the one offered by Moon Climbing it isn't that expensive for the provided service and will save you a lot off time and energy! This is a project for people having fun building things by themself and knowing the downside of doing it. This project will requires some work and still might not work as well as the original. To be absolutely clear: This project is provided as-is. I take absolutely no responsibility that it works as expected. In fact, it might break at any time. You have been warned!
-
-
-▶️ [LEDs test sequence video](doc/leds_setup_sequence.mp4?raw=true)
-
-## ℹ️ Hardware requirements
-
-You need:
-- An ESP32 Devkit development Board
-- x4 (50pcs DC5V WS2811) with 25 cm wire length (or x8 with 15cm wire length and the LED_OFFSET constant set to 2)
-- An appropriate power source
-
-⚡ Power consumption:
-- WS2811 LED seems to draw 20mA for each channel color, so at full brightness (R: 255, G: 255, B: 255) it should be (3 * 20mA) = 60mA
-- Standard Moonboard use 200 LEDs, if all LEDs are turned on white they'll draw (200 * 60mA /1000) * 5v = 60 Watts
-- The max number LEDs turned on is when running the LEDs check at boot. It'll light each LEDs to the colors red, then green, then blue and eventually violet. The max power used is for the violet color at full brightness R and B (255, 0, 255) so aproximatly ( 200 * 40mA / 1000 ) * 5v = 40 Watts. Aiming for a 60 Watts power source should be a good idea.
-
-🛒 Hardware examples:
-- Leds [WS2811 5V 15cm](https://www.aliexpress.com/item/33044775305.html) (Aliexpress)
-- Power supply [Power supply 5v 12A 60W](https://www.aliexpress.com/item/4000035882551.html) (Aliexpress)
-
-⚡ Power injection:
-- You can't power all the strips LEDs only from the first strip, you'll shortly notice weak ligthness of the LEDs after 2 strips due to voltage drop
-- The solution is to inject power each 50 LEDs (so each strip) or each 100 LEDs (this is my setup) from the power supply
+Si desea un producto que simplemente funcione, por favor compre el que ofrece Moon Climbing, ¡no es tan caro para el servicio que ofrece y le ahorrará mucho tiempo y energía! Este es un proyecto para personas que disfrutan construyendo cosas por sí mismas y que conocen las desventajas de hacerlo. Este proyecto requerirá algo de trabajo y aún podría no funcionar tan bien como el original. Para ser absolutamente claro: Este proyecto se proporciona "tal cual". No asumo absolutamente ninguna responsabilidad de que funcione como se espera. De hecho, podría dejar de funcionar en cualquier momento. ¡Ha sido advertido!
 
 
-## 📺 Screen (optional)
+▶️ [Video de secuencia de prueba de LEDs](doc/leds_setup_sequence.mp4?raw=true)
+
+---
+
+## ℹ️ Requisitos de hardware
+
+Necesitas:
+- Una placa de desarrollo **ESP32 Devkit**
+- **x4 (50 unidades de WS2811 DC5V)** con 25 cm de longitud de cable (o x8 con 15 cm de longitud de cable y la constante LED_OFFSET configurada en 2)
+- Una **fuente de alimentación** adecuada
+
+⚡ Consumo de energía:
+- Los **LEDs WS2811** parecen consumir 20mA por cada canal de color, así que a brillo máximo (R: 255, G: 255, B: 255) debería ser (3 * 20mA) = 60mA
+- Un **Moonboard estándar** usa 200 LEDs, si todos los LEDs están encendidos en blanco consumirán (200 * 60mA /1000) * 5v = 60 Vatios
+- El número máximo de LEDs encendidos es cuando se ejecuta la comprobación de LEDs al arrancar. Encenderá cada LED con los colores rojo, luego verde, luego azul y finalmente violeta. La potencia máxima utilizada es para el color violeta a brillo máximo R y B (255, 0, 255), así que aproximadamente ( 200 * 40mA / 1000 ) * 5v = 40 Vatios. Apuntar a una fuente de alimentación de **60 Vatios** debería ser una buena idea.
+
+🛒 Ejemplos de hardware:
+- LEDs [WS2811 5V 15cm](https://www.aliexpress.com/item/33044775305.html) (Aliexpress)
+- Fuente de alimentación [Fuente de alimentación 5v 12A 60W](https://www.aliexpress.com/item/4000035882551.html) (Aliexpress)
+
+⚡ Inyección de energía:
+- No puedes alimentar todos los LEDs de las tiras solo desde la primera tira, rápidamente notarás una luminosidad débil en los LEDs después de 2 tiras debido a la caída de voltaje.
+- La solución es inyectar energía **cada 50 LEDs** (es decir, cada tira) o **cada 100 LEDs** (esta es mi configuración) desde la fuente de alimentación.
+
+---
+
+## 📺 Pantalla (opcional)
 
 ### Hardware
- - Oled 0.96
- - Resolution: 128x64
- - Type: SSD1306
+ - **Oled 0.96**
+ - Resolución: **128x64**
+ - Tipo: **SSD1306**
 
-### Pins wiring
+### Conexión de pines
   -  (D)21 => SDA
   -  (D)22 => SCL
   -  3v3 => VCC
   -  GND => GND
 
-### Settings:
-  - The screen used had the SCREEN_ADDRESS = 0x3C
-  - Use the following i2cScanner sktech here: https://playground.arduino.cc/Main/I2cScanner/
+### Configuración:
+  - La pantalla utilizada tenía la **SCREEN_ADDRESS = 0x3C**
+  - Usa el siguiente *sketch* i2cScanner aquí: https://playground.arduino.cc/Main/I2cScanner/
 
-### Bitmap conversion
+### Conversión de mapa de bits
 
-Just use https://javl.github.io/image2cpp/
- - Invert image colors = true
- - Code output format = Arduino code
+Solo usa https://javl.github.io/image2cpp/
+ - **Invertir colores de imagen = verdadero**
+ - **Formato de salida de código = Código Arduino**
 
-### Documention
+### Documentación
  - https://projetsdiy.fr/ssd1306-mini-ecran-oled-i2c-128x64-arduino/
  - https://randomnerdtutorials.com/esp32-ssd1306-oled-display-arduino-ide/
 
+---
 
-## 🔌 Wiring
+## 🔌 Cableado
 
-![Schematic](doc/sketch_bb.png)
+![Esquemático](doc/sketch_bb.png)
 
+---
 
-## 🙏 Thanks
-All the heavy lifting in this project is done by two awesome libraries: [FastLED](https://github.com/FastLED/FastLED) (for the LED string) and [BLESerial](https://github.com/James-NZ/BLESerial) (for BLE functionality on ESP32). They make it possible to keep this project quite short, easy to understand, and easily maintainable.
+## 🙏 Agradecimientos
+Todo el trabajo pesado en este proyecto lo realizan dos impresionantes bibliotecas: [FastLED](https://github.com/FastLED/FastLED) (para la cadena de LEDs) y [BLESerial](https://github.com/James-NZ/BLESerial) (para la funcionalidad BLE en ESP32). Hacen posible que este proyecto sea bastante corto, fácil de entender y fácil de mantener.
 
-Thanks to the two following projects for inspiration and proving this kind of project was easly doable on Arduino chip:
-- [Moonboard LED sytem on Arduino NRF52](https://github.com/e-sr/moonboard_nrf52)
-- [Moonboard LED on Arduino 33 BLE](https://github.com/FabianRig/ArduinoMoonBoardLED)
+Gracias a los dos siguientes proyectos por la inspiración y por demostrar que este tipo de proyecto era fácilmente realizable en un chip Arduino:
+- [Sistema de LEDs Moonboard en Arduino NRF52](https://github.com/e-sr/moonboard_nrf52)
+- [LED Moonboard en Arduino 33 BLE](https://github.com/FabianRig/ArduinoMoonBoardLED)
 
-## ✨ How to use
-1. Download and install Visual Studio Code.
-2. Install PlatformIO in Visual Studio Code.
-3. Download and open this project.
-4. Adjust to your needs (Moonboard type, LED offset, LED pin) in the `config.h` file.
-2. Compile and flash to an EPS32.
-3. Use the MoonBoard app to connect to the ESP32 and show the problems on your board!
+---
 
-## 🚦 LED Mapping
-The most common LED wiring pattern (here for a MoonBoard standard) goes like this (front view):
-- Start bottom left (A1),
-- Up the column (to A18),
-- One column to the right (to B18),
-- All the way down (to B1),
-- One column to the right (to C1),
-- And repeat.
+## ✨ Cómo usar
+1. Descarga e instala **Visual Studio Code**.
+2. Instala **PlatformIO** en Visual Studio Code.
+3. Descarga y abre este proyecto.
+4. Ajusta a tus necesidades (tipo de Moonboard, *offset* de LEDs, pin de LEDs) en el archivo `config.h`.
+5. Compila y flashea a un **ESP32**.
+6. ¡Usa la **aplicación MoonBoard** para conectarte al ESP32 y mostrar los problemas en tu tabla!
 
-The MoonBoard App encodes holds in the same way. Hold A1 is 0, hold A2 is 1, hold A3 is 2 and so on.
+---
+
+## 🚦 Mapeo de LEDs
+El patrón de cableado de LEDs más común (aquí para un MoonBoard estándar) es el siguiente (vista frontal):
+- Empieza **abajo a la izquierda (A1)**,
+- **Sube por la columna (hasta A18)**,
+- Una columna a la derecha (hasta B18),
+- **Todo el camino hacia abajo (hasta B1)**,
+- Una columna a la derecha (hasta C1),
+- Y repite.
+
+La aplicación MoonBoard codifica los agarres de la misma manera. El agarre A1 es 0, el agarre A2 es 1, el agarre A3 es 2 y así sucesivamente.
 
 ![LEDs](doc/leds_front_back.jpg)
 
-## 💡 Good to know
-- Wiring: Usually, white is GND/negative, red is positive, green is data. Please double-check! It might be a good idea to use a resistor (e.g. 330 ohms) in the data line!
-- Never power the ESP32 only when it's connected to the LED string without powering the LED string! This might destroy the first LED!
-- The ESP32 does not need to be shutdown, you can simply unplug the power source! This is (at least for me) a big improvement when compared to a Raspberry Pi based solution.
+---
 
-## 📷 Pictures
+## 💡 Es bueno saber
+- **Cableado**: Generalmente, el blanco es GND/negativo, el rojo es positivo, el verde es datos. ¡Por favor, verifica dos veces! ¡Podría ser una buena idea usar una resistencia (por ejemplo, **330 ohmios**) en la línea de datos!
+- ¡**Nunca alimentes el ESP32 solo cuando está conectado a la cadena de LEDs sin alimentar la cadena de LEDs**! ¡Esto podría destruir el primer LED!
+- No es necesario apagar el ESP32, ¡simplemente puedes **desconectar la fuente de alimentación**! Esto es (al menos para mí) una gran mejora en comparación con una solución basada en Raspberry Pi.
 
-### ESP32 on a bredboard
+---
+
+## 📷 Imágenes
+
+### ESP32 en una protoboard
 
 ![LEDs](doc/wiring_global.jpg)
 ![LEDs](doc/wiring_pins.jpg)
 
-### ESP32 soldered directly
+### ESP32 soldado directamente
 
 ![LEDs](doc/minified_closeup.jpg)
 
-### ESP32 and all strips LEDs ready for installation
-
-![LEDs](doc/minified_all_leds_strips.jpg)
+### ESP32 y todas las tiras de LEDs listas para la instalación
