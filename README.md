@@ -1,6 +1,6 @@
 # PROYECTO CRASH PATH
 
-![Crasspath_logo](img/dwarfs/logo.)
+![Crasspath_logo](img/dwarfs/logo.jpg)
 
 Este repo nacio como un *fork* de este repo [moonboard-esp32-ledble](https://github.com/labs-tibox/moonboard-esp32-ledble). Este repo funciono como punto de partida!.
 
